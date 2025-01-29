@@ -17,19 +17,26 @@
             background-position: center;
             text-align: center;
             font-family: 'Great Vibes', cursive;
-            color: darkred;
+            color: #FFD700; /* Color dorado */
             padding: 20px;
             transition: background-image 2s ease-in-out;
-            overflow: hidden;
         }
         h1 {
             font-size: 2.5em;
-            text-shadow: 0px 0px 10px darkred;
+            text-shadow: 2px 2px 10px black;
+            font-weight: bold;
         }
         @media (max-width: 600px) {
             h1 {
-                font-size: 1.8em;
+                font-size: 1.8em; /* Más pequeño en móviles */
             }
+        }
+        #mensaje {
+            font-size: 2em;
+            font-weight: bold;
+            display: none;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
         }
         .buttons {
             display: flex;
@@ -51,35 +58,57 @@
         }
         .confetti {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            opacity: 0.9;
-            animation: fall linear forwards;
+            width: 10px;
+            height: 10px;
+            background: red;
+            opacity: 0.8;
+            animation: fall linear infinite;
         }
         @keyframes fall {
             from { transform: translateY(-100px) rotate(0deg); }
-            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
-        #mensaje {
-            font-size: 2em;
-            font-weight: bold;
+        .modal {
             display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background-color: white;
+            color: darkred;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px red;
+            text-align: center;
+            font-size: 2em;
             opacity: 0;
-            transition: opacity 2s ease-in-out;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .modal.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .modal.hide {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
         #no-button {
-            transition: opacity 1s ease-in-out, transform 0.5s ease-in-out;
+            transition: opacity 2s ease-in-out, transform 0.5s ease-in-out;
         }
     </style>
 </head>
 <body>
-    <h1>¿Quieres ser mi San Valentín? Prometo hacerte feliz no solo este día, sino cada día que viva a tu lado, mi niña chiquita.</h1>
+    <h1>¿Quieres ser mi San Valentín? Prometo hacerte feliz no solo este día, sino cada día que viva a tu lado, mi niña chiquita. Quiero enamorarte cada día más</h1>
     <div class="buttons">
         <button id="yes-button">Sí</button>
         <button id="no-button" onclick="desaparecerNo()">No</button>
     </div>
     <p id="mensaje">No te podrás escapar de mí, tu alma ya me pertenece...</p>
+    <div id="modal" class="modal" onclick="cerrarModal()">
+        <p>¡Sabía que dirías que sí! ❤️</p>
+    </div>
     <audio id="audio" src="foryou.mp3"></audio>
     
     <script>
@@ -87,26 +116,20 @@
             document.getElementById("audio").play();
             lanzarConfeti();
             document.body.style.backgroundImage = "url('bodyrosa.jpg')";
+            abrirModal();
         });
-
-        function lanzarConfeti() {
-            let cantidadConfeti = 200; 
-            let intervalo = 50; // Cada partícula aparece con 50ms de diferencia
-
-            for (let i = 0; i < cantidadConfeti; i++) {
-                setTimeout(() => {
-                    let confetti = document.createElement("div");
-                    confetti.className = "confetti";
-                    confetti.style.left = Math.random() * 100 + "vw";
-                    confetti.style.backgroundColor = ["red", "blue", "silver", "gold"][Math.floor(Math.random() * 4)];
-                    confetti.style.animationDuration = (Math.random() * 1 + 4) + "s"; 
-                    confetti.style.animationTimingFunction = "ease-out";
-                    document.body.appendChild(confetti);
-                    setTimeout(() => confetti.remove(), 5000); 
-                }, i * intervalo);
-            }
+        
+        function abrirModal() {
+            let modal = document.getElementById("modal");
+            modal.classList.add("show");
         }
-
+        
+        function cerrarModal() {
+            let modal = document.getElementById("modal");
+            modal.classList.add("hide");
+            setTimeout(() => modal.classList.remove("show", "hide"), 500);
+        }
+        
         function desaparecerNo() {
             let noButton = document.getElementById("no-button");
             let mensaje = document.getElementById("mensaje");
@@ -114,6 +137,26 @@
             mensaje.style.display = "block";
             setTimeout(() => mensaje.style.opacity = "1", 500);
             setTimeout(() => noButton.style.display = "none", 2000);
+        }
+        
+        function lanzarConfeti() {
+            let count = 0;
+            let interval = setInterval(() => {
+                if (count >= 100) {
+                    clearInterval(interval);
+                    return;
+                }
+                let confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.backgroundColor = ["red", "blue", "silver", "gold"][Math.floor(Math.random() * 4)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + "s"; // Caída más lenta (2 a 5 seg)
+                confetti.style.width = Math.random() * 10 + 5 + "px"; 
+                confetti.style.height = confetti.style.width;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+                count++;
+            }, 50); // Confeti cae en cascada poco a poco
         }
     </script>
 </body>
