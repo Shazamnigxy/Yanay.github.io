@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Valentín</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('bodydark.jpg');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            font-family: 'Great Vibes', cursive;
+            color: darkred;
+            padding: 20px;
+            transition: background-image 2s ease-in-out;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 0px 0px 10px darkred;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            background: darkred;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out;
+        }
+        button:hover {
+            background: red;
+            transform: scale(1.1);
+        }
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            opacity: 0.9;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            from { transform: translateY(-100px) rotate(0deg); }
+            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        #mensaje {
+            font-size: 2em;
+            font-weight: bold;
+            display: none;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        #no-button {
+            transition: opacity 1s ease-in-out, transform 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>¿Quieres ser mi San Valentín? Prometo hacerte feliz no solo este día, sino cada día que viva a tu lado, mi niña chiquita.</h1>
+    <div class="buttons">
+        <button id="yes-button">Sí</button>
+        <button id="no-button" onclick="desaparecerNo()">No</button>
+    </div>
+    <p id="mensaje">No te podrás escapar de mí, tu alma ya me pertenece...</p>
+    <audio id="audio" src="foryou.mp3"></audio>
+    
+    <script>
+        document.getElementById("yes-button").addEventListener("click", function() {
+            document.getElementById("audio").play();
+            lanzarConfeti();
+            document.body.style.backgroundImage = "url('bodyrosa.jpg')";
+        });
+
+        function lanzarConfeti() {
+            let cantidadConfeti = 200; 
+            let intervalo = 50; // Cada partícula aparece con 50ms de diferencia
+
+            for (let i = 0; i < cantidadConfeti; i++) {
+                setTimeout(() => {
+                    let confetti = document.createElement("div");
+                    confetti.className = "confetti";
+                    confetti.style.left = Math.random() * 100 + "vw";
+                    confetti.style.backgroundColor = ["red", "blue", "silver", "gold"][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDuration = (Math.random() * 1 + 4) + "s"; 
+                    confetti.style.animationTimingFunction = "ease-out";
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5000); 
+                }, i * intervalo);
+            }
+        }
+
+        function desaparecerNo() {
+            let noButton = document.getElementById("no-button");
+            let mensaje = document.getElementById("mensaje");
+            noButton.style.opacity = "0";
+            mensaje.style.display = "block";
+            setTimeout(() => mensaje.style.opacity = "1", 500);
+            setTimeout(() => noButton.style.display = "none", 2000);
+        }
+    </script>
+</body>
+</html>
